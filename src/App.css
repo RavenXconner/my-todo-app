@@ -1,73 +1,132 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
-  transition: background-color 0.3s ease;
+  background: linear-gradient(135deg, #56ccf2, #2f80ed);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .App {
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 25px;
+  border-radius: 20px;
   max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
   text-align: center;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 h1 {
+  font-size: 2.5rem;
   color: #333;
+  margin-bottom: 20px;
+  font-weight: 700;
 }
 
 body.dark h1 {
-  color: white;
+  color: #fff;
 }
 
+/* Input Styles */
 input[type="text"] {
-  padding: 10px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 30px;
+  border: 2px solid #56ccf2;
+  background: #fff;
   width: 70%;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
+input[type="text"]:focus {
+  border-color: #2f80ed;
+  outline: none;
+}
+
+/* Button Styles */
 button {
-  padding: 10px;
-  background-color: #007bff;
+  padding: 12px 20px;
+  border-radius: 30px;
+  background: #56ccf2;
   color: white;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  margin-right: 5px;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background: #2f80ed;
+  transform: translateY(-3px);
 }
 
+button.delete {
+  background: #e74c3c;
+}
+
+button.delete:hover {
+  background: #c0392b;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Filters Section */
 .filters {
-  margin-top: 10px;
+  margin-top: 30px;
 }
 
 .filters button {
-  margin-right: 10px;
+  padding: 10px 15px;
+  background: #3387ee;  /* Adjusted for light mode */
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
+.filters button:hover {
+  background: #3387ee;
+  color: white;
+}
+
+.filters button.active {
+  background: #2f80ed;
+  color: white;
+}
+
+/* Todo List Section */
 ul.todo-list {
   list-style: none;
   padding: 0;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .todo-item {
+  background: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 30px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.todo-item:hover {
+  transform: translateY(-3px);
+  background: #f5f5f5;
 }
 
 .todo-item.completed span {
@@ -75,33 +134,39 @@ ul.todo-list {
   color: #777;
 }
 
-button {
-  margin-left: 5px;
-}
-
+/* Dark Mode Styles */
 body.dark {
-  background-color: #333;
+  background: linear-gradient(135deg, #2f80ed, #56ccf2);
+}
+
+body.dark .App {
+  background: rgba(18, 18, 18, 0.85);
   color: white;
 }
 
-body.light {
-  background-color: white;
-  color: black;
+body.dark input[type="text"] {
+  background: #333;
+  color: white;
+  border-color: #444;
 }
 
-input[type="text"], .todo-item {
-  background-color: white;
+body.dark button {
+  background: #444;
 }
 
-.dark input[type="text"], .dark .todo-item {
-  background-color: #555;
+body.dark button:hover {
+  background: #222;
+}
+
+body.dark .todo-item {
+  background: #444;
   color: white;
 }
 
-.dark button {
-  background-color: #444;
+body.dark .filters button {
+  background: #333;
 }
 
-.light button {
-  background-color: #007bff;
+body.dark .filters button:hover {
+  background: #444;
 }
