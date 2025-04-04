@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import './App.css';
 import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
 import TodoFilters from './components/TodoFilters';
 import DarkModeToggle from './components/DarkModeToggle';
+
+const API_URL = 'http://127.0.0.1:8000/api/todos/';
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -14,19 +17,13 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const savedTodos = JSON.parse(localStorage.getItem('todos'));
-    if (savedTodos) {
-      setTodos(savedTodos);
-    }
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setDarkMode(true);
-    }
-  }, []);
+    axios.get(API_URL)
+      .then(response => setTodos(response.data))
+      .catch(error => console.error('Error fetching todos:', error));
 
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') setDarkMode(true);
+  }, []);
 
   useEffect(() => {
     document.body.className = darkMode ? 'dark' : 'light';
@@ -35,33 +32,41 @@ function App() {
 
   const addTodo = () => {
     if (inputValue.trim() === '') return;
-    setTodos([...todos, { text: inputValue, completed: false }]);
+    const newTodo = { text: inputValue, completed: false };
+    axios.post(API_URL, newTodo)
+      .then(response => setTodos([...todos, response.data]))
+      .catch(error => console.error('Error adding todo:', error));
     setInputValue('');
   };
 
-  const toggleComplete = (index) => {
-    const newTodos = [...todos];
-    newTodos[index].completed = !newTodos[index].completed;
-    setTodos(newTodos);
+  const toggleComplete = (id) => {
+    const todo = todos.find(todo => todo.id === id);
+    axios.put(`${API_URL}${id}/`, { ...todo, completed: !todo.completed })
+      .then(response => setTodos(todos.map(t => (t.id === id ? response.data : t))))
+      .catch(error => console.error('Error updating todo:', error));
   };
 
-  const deleteTodo = (index) => {
-    setTodos(todos.filter((_, i) => i !== index));
+  const deleteTodo = (id) => {
+    axios.delete(`${API_URL}${id}/`)
+      .then(() => setTodos(todos.filter(todo => todo.id !== id)))
+      .catch(error => console.error('Error deleting todo:', error));
   };
 
-  const editTodo = (index) => {
-    setIsEditing(index);
-    setEditingText(todos[index].text);
+  const editTodo = (id, text) => {
+    setIsEditing(id);
+    setEditingText(text);
   };
 
-  const saveEdit = (index) => {
-    const newTodos = [...todos];
-    newTodos[index].text = editingText;
-    setTodos(newTodos);
-    setIsEditing(null);
+  const saveEdit = (id) => {
+    axios.put(`${API_URL}${id}/`, { text: editingText })
+      .then(response => {
+        setTodos(todos.map(t => (t.id === id ? response.data : t)));
+        setIsEditing(null);
+      })
+      .catch(error => console.error('Error editing todo:', error));
   };
 
-  const filteredTodos = todos.filter((todo) => {
+  const filteredTodos = todos.filter(todo => {
     if (filter === 'completed') return todo.completed;
     if (filter === 'pending') return !todo.completed;
     return true;
